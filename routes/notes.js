@@ -2,6 +2,7 @@ var express = require("express");
 const { errorResponse, validationError } = require("../helpers/errorResponse");
 const { okResponse } = require("../helpers/okResponse");
 const { noteCreateSchema } = require("../schemas/noteCreateSchema");
+const { notePatchSchema } = require("../schemas/notePatchSchema");
 const { noteService } = require("../services/noteService");
 var router = express.Router();
 
@@ -38,14 +39,35 @@ router.post("/", (req, res) => {
 
 		noteCreateSchema
 			.validate(data)
+			.catch(() => {
+				validationError(res);
+			})
 			.then(() => {
 				noteService.createNote(data.contents, data.category);
 
 				okResponse(res);
 			})
+			.catch((err) => errorResponse(res, err));
+	} catch (e) {
+		errorResponse(e);
+	}
+});
+
+router.patch("/:id", (req, res) => {
+	try {
+		const data = req.body;
+
+		notePatchSchema
+			.validate(data)
 			.catch(() => {
 				validationError(res);
-			});
+			})
+			.then(() => {
+				noteService.editNote(req.params.id, data);
+
+				okResponse(res);
+			})
+			.catch((err) => errorResponse(res, err));
 	} catch (e) {
 		errorResponse(e);
 	}

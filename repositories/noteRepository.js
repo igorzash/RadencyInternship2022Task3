@@ -1,4 +1,5 @@
 const { v4: uuid } = require("uuid");
+const { updateObject } = require("../helpers/updateObject");
 const { Note } = require("../models/Note");
 
 class NoteRepository {
@@ -27,13 +28,18 @@ class NoteRepository {
 	}
 
 	editNote(id, patch) {
-		this.notes.map((note) => {
+		let found = false;
+
+		this.notes = this.notes.map((note) => {
 			if (note.id === id) {
-				note = Object.assign(note, patch);
+				updateObject(note, patch);
+				found = true;
 			}
 
 			return note;
 		});
+
+		if (!found) throw new Error("No note with such id.");
 	}
 }
 
