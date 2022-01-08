@@ -1,77 +1,64 @@
 var express = require("express");
-const { errorResponse, validationError } = require("../helpers/errorResponse");
 const { okResponse } = require("../helpers/okResponse");
 const { noteCreateSchema } = require("../schemas/noteCreateSchema");
 const { notePatchSchema } = require("../schemas/notePatchSchema");
 const { noteService } = require("../services/noteService");
 var router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", (req, res, next) => {
 	try {
 		res.json(noteService.getAllNotes());
 	} catch (e) {
-		errorResponse(res, e);
+		next(e);
 	}
 });
 
-router.get("/stats", (req, res) => {
+router.get("/stats", (req, res, next) => {
 	try {
 		res.json(noteService.getStats());
 	} catch (e) {
-		errorResponse(res, err);
+		next(e);
 	}
 });
 
-
-router.get("/:id", (req, res) => {
+router.get("/:id", (req, res, next) => {
 	try {
 		res.json(noteService.getNote(req.params.id));
 	} catch (e) {
-		errorResponse(res, e);
+		next(e);
 	}
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", (req, res, next) => {
 	try {
 		noteService.getNote(req.params.id);
 		noteService.deleteNote(req.params.id);
 
 		okResponse(res);
 	} catch (e) {
-		errorResponse(res, e);
+		next(e);
 	}
 });
 
-router.post("/", (req, res) => {
-	const data = req.body;
-
-	noteCreateSchema
-		.validate(data)
-		.catch(() => {
-			validationError(res);
-		})
+router.post("/", (req, res, next) => {
+	return noteCreateSchema
+		.validate(req.body)
 		.then(() => {
-			noteService.createNote(data.contents, data.category);
-
+			console.log(req.body)
+			noteService.createNote(req.body.contents, req.body.category);
 			okResponse(res);
 		})
-		.catch((err) => errorResponse(res, err));
+		.catch(next);
 });
 
-router.patch("/:id", (req, res) => {
-	const data = req.body;
-
-	notePatchSchema
-		.validate(data)
-		.catch(() => {
-			validationError(res);
-		})
+router.patch("/:id", (req, res, next) => {
+	return notePatchSchema
+		.validate(req.body)
 		.then(() => {
-			noteService.editNote(req.params.id, data);
-
+			noteService.editNote(req.params.id, req.body);
 			okResponse(res);
 		})
-		.catch((err) => errorResponse(res, err));
+		.catch(next);
 });
 
 module.exports = router;
