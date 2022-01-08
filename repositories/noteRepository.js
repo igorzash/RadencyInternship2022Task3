@@ -13,7 +13,6 @@ class NoteRepository {
 	}
 
 	getAllNotes() {
-		console.log(this.notes);
 		return this.notes;
 	}
 
@@ -21,7 +20,7 @@ class NoteRepository {
 		const note = this.notes.filter((note) => note.id === id)[0];
 
 		if (!note) {
-			throw new Error('No note with such id.');
+			throw new Error("No note with such id.");
 		}
 
 		return note;
@@ -40,8 +39,8 @@ class NoteRepository {
 
 const noteRepository = new NoteRepository();
 
-noteRepository.createNote('buy milk', 'Task');
+noteRepository.createNote("buy milk", "Task");
 
 module.exports = {
-	noteRepository
+	noteRepository,
 };
