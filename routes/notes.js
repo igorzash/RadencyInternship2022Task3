@@ -14,6 +14,15 @@ router.get("/", (req, res) => {
 	}
 });
 
+router.get("/stats", (req, res) => {
+	try {
+		res.json(noteService.getStats());
+	} catch (e) {
+		errorResponse(res, err);
+	}
+});
+
+
 router.get("/:id", (req, res) => {
 	try {
 		res.json(noteService.getNote(req.params.id));
@@ -34,43 +43,35 @@ router.delete("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-	try {
-		const data = req.body;
+	const data = req.body;
 
-		noteCreateSchema
-			.validate(data)
-			.catch(() => {
-				validationError(res);
-			})
-			.then(() => {
-				noteService.createNote(data.contents, data.category);
+	noteCreateSchema
+		.validate(data)
+		.catch(() => {
+			validationError(res);
+		})
+		.then(() => {
+			noteService.createNote(data.contents, data.category);
 
-				okResponse(res);
-			})
-			.catch((err) => errorResponse(res, err));
-	} catch (e) {
-		errorResponse(e);
-	}
+			okResponse(res);
+		})
+		.catch((err) => errorResponse(res, err));
 });
 
 router.patch("/:id", (req, res) => {
-	try {
-		const data = req.body;
+	const data = req.body;
 
-		notePatchSchema
-			.validate(data)
-			.catch(() => {
-				validationError(res);
-			})
-			.then(() => {
-				noteService.editNote(req.params.id, data);
+	notePatchSchema
+		.validate(data)
+		.catch(() => {
+			validationError(res);
+		})
+		.then(() => {
+			noteService.editNote(req.params.id, data);
 
-				okResponse(res);
-			})
-			.catch((err) => errorResponse(res, err));
-	} catch (e) {
-		errorResponse(e);
-	}
+			okResponse(res);
+		})
+		.catch((err) => errorResponse(res, err));
 });
 
 module.exports = router;

@@ -1,3 +1,4 @@
+const { CATEGORY } = require("../category");
 const { noteRepository } = require("../repositories/noteRepository");
 
 class NoteService {
@@ -29,6 +30,22 @@ class NoteService {
 
 	editNote(id, patch) {
 		this.repository.editNote(id, patch);
+	}
+
+	getStats() {
+		const categories = Object.values(CATEGORY);
+
+		return categories
+			.map((cat) =>
+				Array.from(this.repository.getAllNotes()).filter(
+					(n) => n.category === cat
+				)
+			)
+			.map((n, i) => ({
+				category: categories[i],
+				active: n.filter((n) => !n.archived).length,
+				archived: n.filter((n) => n.archived).length,
+			}));
 	}
 }
 
