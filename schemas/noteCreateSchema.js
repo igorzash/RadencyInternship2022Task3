@@ -1,5 +1,4 @@
-const { string } = require("yup");
-const { object } = require("yup");
+const { string, object } = require("yup");
 const categorySchema = require("./categorySchema");
 
 const noteCreateSchema = object({

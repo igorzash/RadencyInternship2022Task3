@@ -1,8 +1,6 @@
 const { string } = require("yup");
 const { CATEGORY } = require("../category");
 
-const categorySchema = string().test((value) =>
-	Object.values(CATEGORY).includes(value)
-);
+const categorySchema = string().oneOf(Object.values(CATEGORY));
 
 module.exports = categorySchema;

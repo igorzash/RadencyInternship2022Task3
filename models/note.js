@@ -1,11 +1,11 @@
 class Note {
 	archived = false;
 
-	constructor(id, contents, category) {
+	constructor(id, contents, category, date) {
 		this.id = id;
 		this.contents = contents;
 		this.category = category;
-		this.date = new Date();
+		this.date = date || new Date();
 	}
 }
 
